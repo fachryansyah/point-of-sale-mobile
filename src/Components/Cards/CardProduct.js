@@ -28,7 +28,7 @@ class CardProduct extends Component {
                     <TouchableOpacity onPress={() => alert('test')}>
                         <Image source={{uri: `${API_BASE_URL}/images/${image}`}} style={styles.cardImage} />
                         <View style={styles.cardContent}>
-                            <Text category='h4' style={styles.cardBrand}>{name}</Text>
+                            <Text category='h5' style={styles.cardBrand}>{name}</Text>
                         </View>
                         <View style={styles.cardFooter}>
                             <View style={styles.priceTag}>
@@ -100,15 +100,16 @@ const styles = StyleSheet.create({
         marginTop: 90,
     },
     cardImage: {
-        width: SCREEN_WIDTH * 0.6,
+        width: SCREEN_WIDTH * 0.55,
         height: SCREEN_WIDTH * 0.4,
         resizeMode: 'stretch',
         top:-60,
-        right: SCREEN_WIDTH * 0.13,
+        right: SCREEN_WIDTH * 0.12,
         position: 'absolute'
     },
     cardBrand: {
         color: '#4a4a4a',
+        marginTop: 12,
         fontFamily: 'Montserrat-Bold'
     },
     cardFooter: {

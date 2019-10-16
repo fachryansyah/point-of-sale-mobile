@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {
     View,
+    FlatList,
     StyleSheet,
     ScrollView,
     ImageBackground,
@@ -22,6 +23,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import Http from '../Helper/Http'
 import DrawerContent from '../Components/DrawerContent'
 import CardProduct from '../Components/Cards/CardProduct'
+import CategoryList from '../Components/CategoryList'
 import FabButton from '../Components/FabButton'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -32,7 +34,34 @@ class HomeScreen extends Component {
         this.state = {
             headY: new Animated.Value(0),
             openDrawer: false,
-            products: []
+            products: [],
+            categories: [
+                {
+                    id: 1,
+                    name: 'Laptop',
+                    icon: 'laptop'
+                },
+                {
+                    id: 2,
+                    name: 'Smartphone',
+                    icon: 'smartphone'
+                },
+                {
+                    id: 3,
+                    name: 'Smartphone',
+                    icon: 'smartphone'
+                },
+                {
+                    id: 4,
+                    name: 'Smartphone',
+                    icon: 'smartphone'
+                },
+                {
+                    id: 5,
+                    name: 'Smartphone',
+                    icon: 'smartphone'
+                }
+            ]
         }
     }
 
@@ -117,7 +146,7 @@ class HomeScreen extends Component {
                             </ImageBackground>
                             
                             <Animated.ScrollView 
-                                style={{backgroundColor: '#fff', zIndex: 2}}
+                                style={{backgroundColor: '#fff', zIndex: 2, marginBottom: 150}}
                                 scrollEventThrottle={16}
                                 onScroll={
                                     Animated.event(
@@ -131,7 +160,16 @@ class HomeScreen extends Component {
                                     }
                                 )}
                             >
-                                <Text category='h4' style={styles.headerTitle}>Browse Product</Text>
+                                <Text category='h5' style={[styles.headerTitle, {marginHorizontal: 20} ]}>By Category</Text>
+                                <CategoryList category={this.state.categories} />
+
+                                <View style={{ flexDirection: 'row', marginHorizontal: 20, marginTop: 40 }}>
+                                    <Text category='h5' style={styles.headerTitle}>Browse Product</Text>
+                                    <TouchableOpacity onPress={() => alert('show all')} style={{ marginLeft: 'auto', marginTop: 6 }}>
+                                        <Text style={{ color: '#f5365c' }}>Show more</Text>
+                                    </TouchableOpacity>
+                                </View>
+
                                 <CardProduct product={this.state.products} />
                             </Animated.ScrollView>
                         </Animated.View>
@@ -173,7 +211,6 @@ const styles = StyleSheet.create({
     headerTitle:{
         color: '#4a4a4a',
         fontFamily: 'Montserrat-Bold',
-        marginHorizontal: 18,
         marginBottom: 20
     },
     waveView: {
