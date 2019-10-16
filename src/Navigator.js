@@ -5,6 +5,7 @@ import { fromRight } from 'react-navigation-transitions'
 import HomeScreen from './Screens/HomeScreen'
 import LoginScreen from './Screens/LoginScreen'
 import RegisterScreen from './Screens/RegisterScreen'
+import CartScreen from './Screens/CartScreen'
 
 const MainNavigator = createStackNavigator({
     Login: {
@@ -24,6 +25,9 @@ const MainNavigator = createStackNavigator({
         navigationOptions: {
             header: null,
         },
+    },
+    Cart: {
+        screen: CartScreen
     }
 },{
     initialRouteName: 'Home',

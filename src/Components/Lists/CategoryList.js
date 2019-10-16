@@ -11,7 +11,7 @@ class CategoryList extends Component {
     Category({id, name, icon}){
         return(
             <View style={styles.container}>
-                <Image style={styles.image} source={require('../Assets/Images/laptop.png')} />
+                <Image style={styles.image} source={require('../../Assets/Images/laptop.png')} />
             </View>
         )
     }

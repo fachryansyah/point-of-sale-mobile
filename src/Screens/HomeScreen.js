@@ -23,7 +23,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import Http from '../Helper/Http'
 import DrawerContent from '../Components/DrawerContent'
 import CardProduct from '../Components/Cards/CardProduct'
-import CategoryList from '../Components/CategoryList'
+import CategoryList from '../Components/Lists/CategoryList'
 import FabButton from '../Components/FabButton'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -33,7 +33,6 @@ class HomeScreen extends Component {
         super(props)
         this.state = {
             headY: new Animated.Value(0),
-            openDrawer: false,
             products: [],
             categories: [
                 {
@@ -94,6 +93,14 @@ class HomeScreen extends Component {
         })
     }
 
+    closeControlPanel = () => {
+        this._drawer.close()
+    };
+
+    openControlPanel = () => {
+        this._drawer.open()
+    };
+
     MenuIcon(style){
         return(
             <Icon {...style} name='menu-2-outline' fill='#f5365c' />
@@ -102,7 +109,7 @@ class HomeScreen extends Component {
 
     MenuDrawerAction(){
         return(
-            <TopNavigationAction icon={this.MenuIcon} onPress={() => this.setState({openDrawer: true})} />
+            <TopNavigationAction icon={this.MenuIcon} onPress={() => this.openControlPanel()} />
         )
     }
 
@@ -116,7 +123,7 @@ class HomeScreen extends Component {
         return(
             <>
                 <Drawer
-                    open={this.state.openDrawer}
+                    ref={(ref) => this._drawer = ref}
                     openDrawerOffset={100}
                     tapToClose={true}
                     content={<DrawerContent navigate={this.props.navigation.replace} />}
@@ -175,7 +182,7 @@ class HomeScreen extends Component {
                         </Animated.View>
                     </View>
 
-                    <FabButton />
+                    <FabButton navigate={this.props.navigation.navigate} />
 
                 </Drawer>
             </>
