@@ -13,13 +13,16 @@ import {
     Button,
     Text,
     TopNavigation,
-    TopNavigationAction
+    TopNavigationAction,
+    Icon
 } from 'react-native-ui-kitten'
-import Icon from 'react-native-vector-icons/Ionicons'
+import Drawer from 'react-native-drawer'
 import Wave from 'react-native-waveview'
 import AsyncStorage from '@react-native-community/async-storage'
 import Http from '../Helper/Http'
+import DrawerContent from '../Components/DrawerContent'
 import CardProduct from '../Components/Cards/CardProduct'
+import FabButton from '../Components/FabButton'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -28,61 +31,26 @@ class HomeScreen extends Component {
         super(props)
         this.state = {
             headY: new Animated.Value(0),
-            products: [
-                {
-                    "id": 43,
-                    "name": "Lenovo Legion Y550",
-                    "description": "intel core i7",
-                    "image": "a6b69183-2e01-485d-aa2c-ede8e43281bb.png",
-                    "category_id": 4,
-                    "price": 15000000,
-                    "qty": 6,
-                    "created_at": "2019-10-08T03:56:30.000Z",
-                    "updated_at": "2019-10-11T19:42:26.000Z",
-                    "category": "Laptop"
-                },
-                {
-                    "id": 44,
-                    "name": "Asus Rog Strix G",
-                    "description": "intel i7",
-                    "image": "8d05110b-b38f-4633-8ad2-ec6b2d8e48ac.png",
-                    "category_id": 4,
-                    "price": 17000000,
-                    "qty": 15,
-                    "created_at": "2019-10-09T06:45:53.000Z",
-                    "updated_at": "2019-10-10T16:52:59.000Z",
-                    "category": "Laptop"
-                },
-                {
-                    "id": 46,
-                    "name": "MaCBOOK PRO 15 2018",
-                    "description": "Intel core i5",
-                    "image": "56f3e386-d157-435e-aa9b-121a34402a56.png",
-                    "category_id": 4,
-                    "price": 24000000,
-                    "qty": 11,
-                    "created_at": "2019-10-10T04:01:20.000Z",
-                    "updated_at": "2019-10-11T10:44:17.000Z",
-                    "category": "Laptop"
-                },
-                {
-                    "id": 47,
-                    "name": "Razer blade 15 2019",
-                    "description": "intel core i9",
-                    "image": "3bec7ffa-32e7-4168-bade-27ac1e7d3189.png",
-                    "category_id": 4,
-                    "price": 56000000,
-                    "qty": 11,
-                    "created_at": "2019-10-10T04:02:24.000Z",
-                    "updated_at": "2019-10-13T06:35:54.000Z",
-                    "category": "Laptop"
-                }
-            ]
+            openDrawer: false,
+            products: []
         }
     }
 
     componentDidMount(){
         this.checkAuth()
+        this.getProductData()
+    }
+
+    async getProductData(){
+        await Http.get('/product')
+        .then((res) => {
+            this.setState({
+                products: res.data.data.results
+            })
+        })
+        .catch((err) => {
+            console.log(err.message)
+        })
     }
 
     async checkAuth(){
@@ -97,11 +65,16 @@ class HomeScreen extends Component {
         })
     }
 
-    async logout(){
-        await AsyncStorage.removeItem('@token')
-        Http.defaults.headers.common['Authorization'] = 'Bearer '
-        // console.log(await AsyncStorage.getItem('@token'))
-        this.props.navigation.replace('Login')
+    MenuIcon(style){
+        return(
+            <Icon {...style} name='menu-2-outline' fill='#f5365c' />
+        )
+    }
+
+    MenuDrawerAction(){
+        return(
+            <TopNavigationAction icon={this.MenuIcon} onPress={() => this.setState({openDrawer: true})} />
+        )
     }
 
     render(){
@@ -113,55 +86,60 @@ class HomeScreen extends Component {
           
         return(
             <>
-                
-                <View style={styles.container}> 
-                    <TopNavigation
-                        title='POINTZO'
-                        alignment='center'
-                        style={styles.topNav}
-                        titleStyle={styles.titleTopNav}
-                        leftControl={
-                            <TouchableOpacity style={{marginLeft: 12}} onPress={() => alert("open menu")}>
-                                <Icon name="ios-menu" size={30} color="#f5365c" />
-                            </TouchableOpacity>
-                        }
-                    />
-                    <Animated.View style={{transform: [{ translateY: headMov }]}}>
-                        <ImageBackground source={require('../Assets/Images/bg-home.png')} style={styles.header}>
-                            <View style={styles.waveView}>
-                                <Wave
-                                    style={styles.wave}
-                                    H={25}
-                                    waveParams={[
-                                        {A: 30, T: SCREEN_WIDTH, fill: 'rgba(255, 255, 255, 0.2)'},
-                                        {A: 35, T: SCREEN_WIDTH, fill: 'rgba(255, 255, 255, 0.4)'},
-                                        {A: 17, T: SCREEN_WIDTH, fill: 'rgba(255, 255, 255, 1)'},
-                                    ]}
-                                    animated={true}
-                                />
-                            </View>
-                        </ImageBackground>
-                        
-                        <Animated.ScrollView 
-                            style={{backgroundColor: '#fff'}}
-                            scrollEventThrottle={16}
-                            onScroll={
-                                Animated.event(
-                                [
-                                    {
-                                        nativeEvent: { contentOffset: { y: this.state.headY } }
-                                    }
-                                ],
-                                {
-                                    useNativeDriver: true
-                                }
-                            )}
-                        >
+                <Drawer
+                    open={this.state.openDrawer}
+                    openDrawerOffset={100}
+                    tapToClose={true}
+                    content={<DrawerContent navigate={this.props.navigation.replace} />}
+                >
+                    <View style={styles.container}> 
+                        <TopNavigation
+                            title='POINTZO'
+                            alignment='center'
+                            style={styles.topNav}
+                            titleStyle={styles.titleTopNav}
+                            leftControl={this.MenuDrawerAction()}
+                        />
+                        <Animated.View style={{transform: [{ translateY: headMov }]}}>
+                            <ImageBackground source={require('../Assets/Images/bg-home.png')} style={styles.header}>
+                                <View style={styles.waveView}>
+                                    <Wave
+                                        style={styles.wave}
+                                        H={25}
+                                        waveParams={[
+                                            {A: 30, T: SCREEN_WIDTH, fill: 'rgba(255, 255, 255, 0.2)'},
+                                            {A: 35, T: SCREEN_WIDTH, fill: 'rgba(255, 255, 255, 0.4)'},
+                                            {A: 17, T: SCREEN_WIDTH, fill: 'rgba(255, 255, 255, 1)'},
+                                        ]}
+                                        animated={true}
+                                    />
+                                </View>
+                            </ImageBackground>
                             
-                            <CardProduct product={this.state.products} />
-                        </Animated.ScrollView>
-                    </Animated.View>
-                </View>
+                            <Animated.ScrollView 
+                                style={{backgroundColor: '#fff', zIndex: 2}}
+                                scrollEventThrottle={16}
+                                onScroll={
+                                    Animated.event(
+                                    [
+                                        {
+                                            nativeEvent: { contentOffset: { y: this.state.headY } }
+                                        }
+                                    ],
+                                    {
+                                        useNativeDriver: true
+                                    }
+                                )}
+                            >
+                                <Text category='h4' style={styles.headerTitle}>Browse Product</Text>
+                                <CardProduct product={this.state.products} />
+                            </Animated.ScrollView>
+                        </Animated.View>
+                    </View>
+
+                    <FabButton />
+
+                </Drawer>
             </>
         )
     }
@@ -191,6 +169,12 @@ const styles = StyleSheet.create({
     },
     titleTopNav: {
         fontFamily: 'Montserrat-Bold'
+    },
+    headerTitle:{
+        color: '#4a4a4a',
+        fontFamily: 'Montserrat-Bold',
+        marginHorizontal: 18,
+        marginBottom: 20
     },
     waveView: {
         width: SCREEN_WIDTH,

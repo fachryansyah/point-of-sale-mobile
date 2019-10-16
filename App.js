@@ -22,7 +22,9 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { mapping, light as lightTheme } from '@eva-design/eva'
-import { ApplicationProvider, Layout } from 'react-native-ui-kitten'
+import { ApplicationProvider, Layout, IconRegistry } from 'react-native-ui-kitten'
+
+import { EvaIconsPack } from '@ui-kitten/eva-icons'
 
 import { Provider } from 'react-redux'
 import Store from './src/Redux/store'
@@ -36,6 +38,7 @@ class App extends Component {
       <>
         {/* <StatusBar barStyle="dark-content" /> */}
         <Provider store={Store}>
+          <IconRegistry icons={EvaIconsPack} />
           <ApplicationProvider mapping={mapping} theme={lightTheme}>
             <Navigator />
           </ApplicationProvider>

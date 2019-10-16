@@ -4,6 +4,7 @@ import {
     View,
     StyleSheet, 
     TouchableOpacity,
+    TouchableNativeFeedback,
     Image,
     FlatList,
     Dimensions
@@ -24,19 +25,21 @@ class CardProduct extends Component {
         return(
             <View style={styles.wrapCard}>
                 <View style={styles.card}>
-                    <Image source={{uri: `${API_BASE_URL}/images/${image}`}} style={styles.cardImage} />
-                    <View style={styles.cardContent}>
-                        <Text category='h4' style={styles.cardBrand}>{name}</Text>
-                    </View>
-                    <View style={styles.cardFooter}>
-                        <View style={styles.priceTag}>
-                            <Text category='s1' style={styles.titleWhite}>{price}</Text>
+                    <TouchableOpacity onPress={() => alert('test')}>
+                        <Image source={{uri: `${API_BASE_URL}/images/${image}`}} style={styles.cardImage} />
+                        <View style={styles.cardContent}>
+                            <Text category='h4' style={styles.cardBrand}>{name}</Text>
                         </View>
-                        <View style={styles.viewQty}>
-                            <Text category='s1' style={styles.titleWhite}>{qty}</Text>
+                        <View style={styles.cardFooter}>
+                            <View style={styles.priceTag}>
+                                <Text category='s1' style={styles.titleWhite}>{price}</Text>
+                            </View>
+                            <View style={styles.viewQty}>
+                                <Text category='s1' style={styles.titleWhite}>{qty}</Text>
+                            </View>
                         </View>
-                    </View>
-                    <Button appearance='outline' status='danger'>
+                    </TouchableOpacity>
+                    <Button appearance='outline' status='danger' style={styles.btnCart}>
                         <Icon name="ios-cart" size={20} color="#f5365c" />  ADD TO CART
                     </Button>
                 </View>
@@ -49,6 +52,10 @@ class CardProduct extends Component {
             <>
                 <View style={styles.container}>
                     <FlatList
+                        horizontal
+                        pagingEnabled={true}
+                        showsHorizontalScrollIndicator={false}
+                        legacyImplementation={false}
                         data={this.props.product}
                         renderItem={({item}) => <this.Card name={item.name} image={item.image} price={item.price} qty={item.qty} />}
                         keyExtractor={item => item.id}
@@ -66,7 +73,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     wrapCard: {
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        width: SCREEN_WIDTH,
     },
     card:{
         marginTop: 60,
@@ -89,7 +97,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     cardContent: {
-        marginTop: 90
+        marginTop: 90,
     },
     cardImage: {
         width: SCREEN_WIDTH * 0.6,
@@ -105,7 +113,7 @@ const styles = StyleSheet.create({
     },
     cardFooter: {
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     priceTag: {
         backgroundColor:"#f5365c",
@@ -115,7 +123,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius:10,
         borderBottomRightRadius:10,
         padding: 6,
-        marginVertical: 10
+        marginVertical: 16
     },
     titleWhite: {
         color: '#fff',
@@ -130,6 +138,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         right: SCREEN_WIDTH * 0.34
+    },
+    btnCart: {
+        marginVertical: 12
     }
 })
 
