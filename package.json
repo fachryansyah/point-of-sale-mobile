@@ -21,7 +21,9 @@
     "react-native-fab": "^1.0.9",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-indicators": "^0.16.0",
+    "react-native-modal": "^11.4.0",
     "react-native-svg": "^9.11.1",
+    "react-native-swipe-list-view": "^2.0.3",
     "react-native-ui-kitten": "^4.2.0",
     "react-native-vector-icons": "^6.6.0",
     "react-native-waveview": "^1.1.0",
@@ -31,7 +33,8 @@
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
-    "redux-promise-middleware": "^6.1.1"
+    "redux-promise-middleware": "^6.1.1",
+    "rupiah-format": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",

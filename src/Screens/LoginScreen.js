@@ -31,7 +31,6 @@ class LoginScreen extends Component {
 
     componentDidMount(){
         this.checkAuth()
-        // console.log("test")
     }
 
     onChangeEmail(value){
@@ -68,7 +67,6 @@ class LoginScreen extends Component {
                 password: this.state.password
             })
             .then((res) => {
-                console.log(res.data)
                 if (res.data.status == 500) {
                     
                     ToastAndroid.show(
@@ -113,12 +111,6 @@ class LoginScreen extends Component {
         } catch (e) {
             console.log(e.message)
         }
-
-        await AsyncStorage.getItem('@token', (err, result) => {
-            console.log(result)
-        })
-
-        console.log(await this.props.Auth)
     }
 
     async checkAuth(){
@@ -127,7 +119,6 @@ class LoginScreen extends Component {
         })
         Http.get('/user')
         .then((res) => {
-            console.log(res.data)
             if (res.data.status == 200) {
                 this.props.navigation.replace('Home')
             }

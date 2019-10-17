@@ -1,6 +1,11 @@
 import React, {Component} from 'react'
-import {View, FlatList, StyleSheet, Image, Dimensions} from 'react-native'
+import {connect} from 'react-redux'
+import AsyncStorage from '@react-native-community/async-storage'
+import {View, FlatList, StyleSheet, Image, Dimensions, TouchableOpacity} from 'react-native'
+import { SwipeListView } from 'react-native-swipe-list-view'
 import {Text, Button, Icon} from 'react-native-ui-kitten'
+import { addQtyCart, reduceQtyCart, removeCart } from '../../Redux/Actions/Cart'
+import Rupiah from 'rupiah-format'
 import {API_BASE_URL} from 'react-native-dotenv'
 
 const PlusIcon = (style) => (
@@ -17,35 +22,58 @@ class CartList extends Component {
         super(props)
     }
 
-    Cart({id, name, image, price, qty}){
-        return(
-            <View style={styles.container}>
-                <View style={styles.card}>
-                    <View style={styles.cardBody}>
-                        <Image source={{uri: `${API_BASE_URL}/images/${image}`}} style={styles.cardImage} />
-                        <View style={styles.cardContent}>
-                            <Text category='h6' style={styles.textBrand}>{name}</Text>
-                            <View style={styles.viewControl}>
-                                <Button status='danger' appearance='outline' size='small' icon={MinusIcon} />
-                                <Text style={styles.textQty}>12</Text>
-                                <Button status='success' appearance='outline' size='small' icon={PlusIcon} />
-                            </View>
-                            <View style={styles.priceTag}>
-                                <Text category='s1' style={styles.titleWhite}>{price}</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            </View>
-        )
+    async removeFromCart(index){
+        await this.props.dispatch(removeCart(index))
+        await AsyncStorage.setItem("@carts", JSON.stringify(this.props.cart.cartList))
+    }
+
+    async addQtyProduct(index){
+        let cart = this.props.cart.cartList
+
+        await this.props.dispatch(addQtyCart(index, cart[index].currentPrice, cart[index].currentQty))
+        await AsyncStorage.setItem("@carts", JSON.stringify(this.props.cart.cartList))
+    }
+
+    async recudeQtyProduct(index){
+        let cart = this.props.cart.cartList
+
+        await this.props.dispatch(reduceQtyCart(index, cart[index].currentPrice))
+        await AsyncStorage.setItem("@carts", JSON.stringify(this.props.cart.cartList))
     }
 
     render(){
         return(
             <>
-                <FlatList
+                <SwipeListView
                     data={this.props.product}
-                    renderItem={({item}) => <this.Cart id={item.id} name={item.name} image={item.image} price={item.price} qty={item.qty} />}
+                    renderHiddenItem={ ({data, index}) => (
+                        <TouchableOpacity onPress={() => this.removeFromCart(index)} style={styles.rowBack}>
+                            <View style={{alignItems: 'center'}}>
+                                <Icon name='close-outline' fill='#fff' width={32} height={32} />
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    rightOpenValue={-80}
+                    renderItem={({item, index}) => (
+                        <View style={[styles.container, styles.rowFront]}>
+                            <View style={styles.card}>
+                                <View style={styles.cardBody}>
+                                    <Image source={{uri: `${API_BASE_URL}/images/${item.image}`}} style={styles.cardImage} />
+                                    <View style={styles.cardContent}>
+                                        <Text category='h6' style={styles.textBrand}>{item.name}</Text>
+                                        <View style={styles.viewControl}>
+                                            <Button status='danger' appearance='outline' size='small' icon={MinusIcon} onPress={() => this.recudeQtyProduct(index)} />
+                                            <Text style={styles.textQty}>{item.qty}</Text>
+                                            <Button status='success' appearance='outline' size='small' icon={PlusIcon} onPress={() => this.addQtyProduct(index)} />
+                                        </View>
+                                        <View style={styles.priceTag}>
+                                            <Text category='s1' style={styles.titleWhite}>{Rupiah.convert(item.price)}</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    )}
                     keyExtractor={item => item.id}
                 />
             </>
@@ -57,7 +85,22 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
     container: {
-        marginVertical: 4
+        // marginVertical: 4
+    },
+    rowBack: {
+        alignItems: 'center',
+        backgroundColor: '#d13030',
+        height: '100%',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingRight: 10,
+        paddingLeft: 10,
+        position: 'absolute',
+        right:0
+    },
+    rowFront: {
+        backgroundColor: '#fff'
     },
     card: {
         borderRadius: 4,
@@ -106,4 +149,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CartList
+const mapStateToProps = state => {
+    return {
+        cart: state.Cart
+    }
+}
+
+export default connect(mapStateToProps)(CartList)

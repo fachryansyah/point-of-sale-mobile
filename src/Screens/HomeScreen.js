@@ -8,7 +8,8 @@ import {
     ImageBackground,
     TouchableOpacity,
     Dimensions,
-    Animated
+    Animated,
+    StatusBar
 } from 'react-native'
 import {
     Button,
@@ -122,6 +123,7 @@ class HomeScreen extends Component {
           
         return(
             <>
+                <StatusBar barStyle="light-content" backgroundColor="#f53b60" />
                 <Drawer
                     ref={(ref) => this._drawer = ref}
                     openDrawerOffset={100}

@@ -7,13 +7,18 @@ import {
     TouchableNativeFeedback,
     Image,
     FlatList,
-    Dimensions
+    Dimensions,
+    ToastAndroid
 } from 'react-native'
 import {
     Text,
     Button
 } from 'react-native-ui-kitten'
+import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/Ionicons'
+import AsyncStorage from '@react-native-community/async-storage'
+import Rupiah from 'rupiah-format'
+import { pushCart } from '../../Redux/Actions/Cart'
 
 class CardProduct extends Component {
     
@@ -21,30 +26,35 @@ class CardProduct extends Component {
         super(props)
     }
 
-    Card({name, image, price, qty}){
-        return(
-            <View style={styles.wrapCard}>
-                <View style={styles.card}>
-                    <TouchableOpacity onPress={() => alert('test')}>
-                        <Image source={{uri: `${API_BASE_URL}/images/${image}`}} style={styles.cardImage} />
-                        <View style={styles.cardContent}>
-                            <Text category='h5' style={styles.cardBrand}>{name}</Text>
-                        </View>
-                        <View style={styles.cardFooter}>
-                            <View style={styles.priceTag}>
-                                <Text category='s1' style={styles.titleWhite}>{price}</Text>
-                            </View>
-                            <View style={styles.viewQty}>
-                                <Text category='s1' style={styles.titleWhite}>{qty}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <Button appearance='outline' status='danger' style={styles.btnCart}>
-                        <Icon name="ios-cart" size={20} color="#f5365c" />  ADD TO CART
-                    </Button>
-                </View>
-            </View>
-        )
+    async onAddToCart(product){
+        const { id, name, image, price, qty } = product
+
+        let isProductAlreadyAdded = false
+
+        if (this.props.cart.cartList != null && this.props.cart.cartList.length > 0) {
+            isProductAlreadyAdded = this.props.cart.cartList.find(cart => cart.id == id)
+        }
+
+        if (!isProductAlreadyAdded) {
+            let cart = { id, name, image, qty: 1, price, currentPrice: price, currentQty: qty }
+
+            await this.props.dispatch(pushCart(cart))
+
+            await AsyncStorage.setItem("@carts", JSON.stringify(this.props.cart.cartList))
+            
+            ToastAndroid.show(
+                'Successfully added to cart!', 
+                ToastAndroid.LONG, 
+                ToastAndroid.BOTTOM
+            )
+
+        }else{
+            ToastAndroid.show(
+                'Product already exist in cart!', 
+                ToastAndroid.LONG, 
+                ToastAndroid.BOTTOM
+            )
+        }
     }
 
     render(){
@@ -57,7 +67,31 @@ class CardProduct extends Component {
                         showsHorizontalScrollIndicator={false}
                         legacyImplementation={false}
                         data={this.props.product}
-                        renderItem={({item}) => <this.Card name={item.name} image={item.image} price={item.price} qty={item.qty} />}
+                        renderItem={({item}) => (
+                            <View style={styles.wrapCard}>
+                                <View style={styles.card}>
+                                    <TouchableOpacity onPress={() => alert('test')}>
+                                        <Image source={{uri: `${API_BASE_URL}/images/${item.image}`}} style={styles.cardImage} />
+                                        <View style={styles.cardContent}>
+                                            <Text category='h5' style={styles.cardBrand}>{item.name}</Text>
+                                        </View>
+                                        <View style={styles.cardFooter}>
+                                            <View style={styles.priceTag}>
+                                                <Text category='s1' style={styles.titleWhite}>{Rupiah.convert(item.price)}</Text>
+                                            </View>
+                                            <View style={styles.viewQty}>
+                                                <Text category='s1' style={styles.titleWhite}>{item.qty}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <Button appearance='outline' status='danger' style={styles.btnCart} onPress={() => {
+                                        this.onAddToCart(item)
+                                    }}>
+                                        <Icon name="ios-cart" size={20} color="#f5365c" />  ADD TO CART
+                                    </Button>
+                                </View>
+                            </View>
+                        )}
                         keyExtractor={item => item.id}
                     />
                 </View>
@@ -145,4 +179,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CardProduct
+const mapStateToProps = state => {
+    return {
+        cart: state.Cart
+    }
+}
+
+export default connect(mapStateToProps)(CardProduct)
