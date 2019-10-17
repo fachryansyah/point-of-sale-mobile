@@ -92,7 +92,11 @@ class CartScreen extends Component {
                 })
                 await this.props.dispatch(cleanCart())
                 await AsyncStorage.setItem("@carts", JSON.stringify(this.props.cart.cartList))
-                await this.props.navigation.navigate('Checkout')
+                await this.props.navigation.navigate('Checkout', {
+                    receiptNo: res.data.data.receipt_no,
+                    amount: res.data.data.amount,
+                    items: res.data.data.order_items
+                })
                 this.toggleModalCheckout()
             }
         })

@@ -38,23 +38,24 @@ class CheckoutScreen extends Component {
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: (
-                <Text category='h6' style={{fontFamily: 'Montserrat-Bold'}}>Receipt no. 52389543965</Text>
+                <Text category='h6' style={{fontFamily: 'Montserrat-Bold'}}>Receipt no. {navigation.getParam('receiptNo', '0')}</Text>
             )
         }
     }
 
     render(){
+        const { navigation } = this.props
         return(
             <>
                 <View style={styles.container}>
                     <View style={styles.card}>
                         <FlatList
-                            data={this.state.items}
+                            data={navigation.getParam('items', [])}
                             renderItem={({item, index}) => (
                                 <View style={styles.list}>
-                                    <Text category='h6' style={styles.textBrand}>{item.name}</Text>
+                                    <Text category='h6' style={styles.textBrand}>{item.product.name}</Text>
                                     <View style={styles.displayRow}>
-                                        <Text category='s1' style={[styles.textPrice, styles.floatLeft]}>{Rupiah.convert(item.price)}</Text>
+                                        <Text category='s1' style={[styles.textPrice, styles.floatLeft]}>{Rupiah.convert(item.total_price)}</Text>
                                         <Text category='h6' style={[styles.textQty, styles.floatRight]}>{item.qty}</Text>
                                     </View>
                                 </View>
@@ -67,7 +68,7 @@ class CheckoutScreen extends Component {
                     </View>
                     <View style={[styles.priceTag, styles.displayRow]}>
                         <Text category='s1' style={[styles.textTotalPrice, styles.floatLeft]}>Total</Text>
-                        <Text category='s1' style={[styles.textTotalPrice, styles.floatRight]}>Rp 200.000.000</Text>
+                        <Text category='s1' style={[styles.textTotalPrice, styles.floatRight]}>{Rupiah.convert(navigation.getParam('amount', '0'))}</Text>
                     </View>
                 </View>
             </>
