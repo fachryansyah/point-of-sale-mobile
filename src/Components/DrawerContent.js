@@ -14,8 +14,7 @@ class DrawerContent extends Component {
     async logout(){
         await AsyncStorage.removeItem('@token')
         Http.defaults.headers.common['Authorization'] = 'Bearer '
-        // console.log(await AsyncStorage.getItem('@token'))
-        this.props.navigate('Login')
+        this.props.navigation.replace('Login')
     }
 
     SettingIcon(style){
@@ -40,27 +39,31 @@ class DrawerContent extends Component {
 
     drawerData = [
         {
-            title: 'Dashboard',
+            title: 'Home',
+            screen: 'Home',
             icon: this.SettingIcon
         },
         {
             title: 'History',
+            screen: 'History',
             icon: this.SettingIcon
         },
         {
             title: 'Statistic Report',
+            screen: 'Statistic',
             icon: this.SettingIcon
         },
         {
             title: 'Manage Product',
+            screen: 'ManageProduct',
             icon: this.SettingIcon
         }
     ];
 
     onRouteSelect = (index) => {
-        // const { [index]: route } = this.drawerData;
+        const { [index]: route } = this.drawerData;
         // navigate with React Navigation
-        // this.props.navigation.navigate(route.title);
+        this.props.navigation.navigate(route.screen);
     }
 
     __renderProfileHeader = () => (

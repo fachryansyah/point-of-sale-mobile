@@ -7,6 +7,8 @@ import LoginScreen from './Screens/LoginScreen'
 import RegisterScreen from './Screens/RegisterScreen'
 import CartScreen from './Screens/CartScreen'
 import CheckoutScreen from './Screens/CheckoutScreen'
+import HistoryScreen from './Screens/HistoryScreen'
+import StatisticScreen from './Screens/StatisticScreen'
 
 const MainNavigator = createStackNavigator({
     Login: {
@@ -32,6 +34,12 @@ const MainNavigator = createStackNavigator({
     },
     Checkout: {
         screen: CheckoutScreen
+    },
+    History: {
+        screen: HistoryScreen
+    },
+    Statistic: {
+        screen: StatisticScreen
     }
 },{
     initialRouteName: 'Home',

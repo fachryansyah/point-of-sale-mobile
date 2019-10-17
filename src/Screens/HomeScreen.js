@@ -128,7 +128,7 @@ class HomeScreen extends Component {
                     ref={(ref) => this._drawer = ref}
                     openDrawerOffset={100}
                     tapToClose={true}
-                    content={<DrawerContent navigate={this.props.navigation.replace} />}
+                    content={<DrawerContent navigation={this.props.navigation} />}
                 >
                     <View style={styles.container}> 
                         <TopNavigation
