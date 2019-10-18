@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
-import { View, FlatList, StyleSheet, Image, Dimensions, ToastAndroid, TouchableOpacity } from 'react-native'
-import { Text, Button, Icon } from 'react-native-ui-kitten'
+import { 
+    View, 
+    FlatList, 
+    StyleSheet, 
+    Image, 
+    Dimensions, 
+    ToastAndroid, 
+    TouchableOpacity,
+    TextInput
+} from 'react-native'
+import { Text, Button, Icon, Input } from 'react-native-ui-kitten'
 import {connect} from 'react-redux'
 import { pushCart } from '../Redux/Actions/Cart'
 import Rupiah from 'rupiah-format'
@@ -15,18 +24,20 @@ class ProductScreen extends Component {
     constructor(props){
         super(props)
         this.state = {
-            products: []
+            products: [],
+            search: ''
         }
     }
 
     static navigationOptions = ({navigation}) => {
         const { params = {} } = navigation.state
+        
         return {
             headerTitle: (
                 <Text category='h6' style={{fontFamily: 'Montserrat-Bold'}}>Browse Product</Text>
             )
         }
-    };
+    }
 
     componentDidMount(){
         this.getProductData()
@@ -41,6 +52,28 @@ class ProductScreen extends Component {
         })
         .catch((err) => {
             console.log(err.message)
+        })
+    }
+
+    async searchProduct(event){
+
+        this.setState({
+            isLoading: true
+        })
+
+        await Http.get(`/product?search=${event.nativeEvent.text}`)
+        .then((res) => {
+            console.log(res.data.data)
+            this.setState({
+                products: res.data.data.results,
+                isLoading: false
+            })
+        })
+        .catch((err) => {
+            this.setState({
+                isLoading: false
+            })
+            console.log(err)
         })
     }
 
@@ -79,6 +112,14 @@ class ProductScreen extends Component {
         return(
             <>
                 <View style={styles.container}>
+                    <Input
+                        style={{marginTop: 12}}
+                        size='small'
+                        placeholder='Search..'
+                        value={this.state.search}
+                        onChangeText={(val) => this.setState({search: val})}
+                        onSubmitEditing={(event) => this.searchProduct(event)}
+                    />
                     <View style={{ marginTop: 12 }}>
                         <SwipeListView
                             data={this.state.products}
@@ -113,8 +154,8 @@ class ProductScreen extends Component {
                             keyExtractor={item => item.id}
                         />
                     </View>
-                    <FabButton navigate={this.props.navigation.navigate} />
                 </View>
+                <FabButton navigate={this.props.navigation.navigate} />
             </>
         )
     }
@@ -124,16 +165,16 @@ const SCREEN_WIDTH = Dimensions.get('window').width
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
         paddingHorizontal: 6,
-        // backgroundColor: 'red'
+    },
+    topNavigation: {
+        // elevation: 6
     },
     card: {
         backgroundColor: '#fff',
         elevation: 6,
         marginVertical: 12,
         marginHorizontal: 12,
-        // backgroundColor: 'red',
         borderRadius: 12
     },
     textTitle: {

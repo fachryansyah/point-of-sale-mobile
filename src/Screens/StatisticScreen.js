@@ -8,9 +8,9 @@ import {LineChart, BarChart} from 'react-native-chart-kit'
 
 const chartConfig = {
     barPercentage:1,
-    backgroundColor: "#e26a00",
-    backgroundGradientFrom: "#fb8c00",
-    backgroundGradientTo: "#ffa726",
+    backgroundColor: "#f5365c",
+    backgroundGradientFrom: "#FC4A85",
+    backgroundGradientTo: "#FC7B65",
     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
     style: {
@@ -19,7 +19,7 @@ const chartConfig = {
     propsForDots: {
         r: "6",
         strokeWidth: "2",
-        stroke: "#ffa726"
+        stroke: "#e63054"
     }
 }
 
@@ -345,10 +345,9 @@ class StatisticScreen extends Component {
                             height={260}
                             yAxisLabel={"Rp."}
                             chartConfig={chartConfig}
-                            onDataPointClick={({value}) => ToastAndroid.showWithGravity(
+                            onDataPointClick={({value}) => ToastAndroid.show(
                                 Rupiah.convert(value), 
-                                ToastAndroid.SHORT, 
-                                ToastAndroid.BOTTOM
+                                ToastAndroid.SHORT
                             )}
                             verticalLabelRotation={20}
                             bezier
