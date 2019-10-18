@@ -24,7 +24,6 @@ async function getToken(){
     
 }
 
-
 getToken()
 
 export default instance

@@ -71,7 +71,7 @@ class HomeScreen extends Component {
     }
 
     async getProductData(){
-        await Http.get('/product')
+        await Http.get('/product?limit=4')
         .then((res) => {
             this.setState({
                 products: res.data.data.results
@@ -169,12 +169,15 @@ class HomeScreen extends Component {
                                     }
                                 )}
                             >
-                                <Text category='h5' style={[styles.headerTitle, {marginHorizontal: 20} ]}>By Category</Text>
+                                <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
+                                    <Text category='h5' style={styles.headerTitle}>By Category</Text>
+                                </View>
+
                                 <CategoryList category={this.state.categories} />
 
                                 <View style={{ flexDirection: 'row', marginHorizontal: 20, marginTop: 40 }}>
-                                    <Text category='h5' style={styles.headerTitle}>Browse Product</Text>
-                                    <TouchableOpacity onPress={() => alert('show all')} style={{ marginLeft: 'auto', marginTop: 6 }}>
+                                    <Text category='h5' style={[styles.headerTitle, styles.borderedText]}>Browse Product</Text>
+                                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Product')} style={{ marginLeft: 'auto', marginTop: 6 }}>
                                         <Text style={{ color: '#f5365c' }}>Show more</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -221,6 +224,10 @@ const styles = StyleSheet.create({
         color: '#4a4a4a',
         fontFamily: 'Montserrat-Bold',
         marginBottom: 20
+    },
+    borderedText: {
+        borderBottomColor: '#f5365c',
+        borderBottomWidth: 3
     },
     waveView: {
         width: SCREEN_WIDTH,

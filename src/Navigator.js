@@ -9,6 +9,7 @@ import CartScreen from './Screens/CartScreen'
 import CheckoutScreen from './Screens/CheckoutScreen'
 import HistoryScreen from './Screens/HistoryScreen'
 import StatisticScreen from './Screens/StatisticScreen'
+import ProductScreen from './Screens/ProductScreen'
 
 const MainNavigator = createStackNavigator({
     Login: {
@@ -40,6 +41,9 @@ const MainNavigator = createStackNavigator({
     },
     Statistic: {
         screen: StatisticScreen
+    },
+    Product: {
+        screen: ProductScreen
     }
 },{
     initialRouteName: 'Home',
