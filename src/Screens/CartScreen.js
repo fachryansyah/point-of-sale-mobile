@@ -84,7 +84,6 @@ class CartScreen extends Component {
         })
         .then( async (res) => {
             console.log(res.data.data)
-            console.log(this.props.cart.cartList)
             if (res.data.status == 200) {
                 this.setState({
                     checkout: res.data.data,

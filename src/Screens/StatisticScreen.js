@@ -264,7 +264,7 @@ class StatisticScreen extends Component {
         }else{
             return(
                 <>
-                    <Text category='h6' style={styles.cardValue}>{Rupiah.convert(this.state.todayIncomeOrder)}</Text>
+                    <Text category='p1' style={styles.cardValue}>{Rupiah.convert(this.state.todayIncomeOrder)}</Text>
                     <View style={{flexDirection: 'row'}}>
                         <Icon style={{marginRight: 6}} name={this.state.todayPrecentageIncome > 0 ? 'arrow-upward-outline' : 'arrow-downward-outline' } width={20} height={20} fill='#fff' />
                         <Text category='p1' style={styles.cardPercent}>{this.state.todayPrecentageIncome}%</Text>
@@ -284,7 +284,7 @@ class StatisticScreen extends Component {
         }else{
             return(
                 <>
-                    <Text category='h6' style={styles.cardValue}>{this.state.totalOrder}</Text>
+                    <Text category='p1' style={styles.cardValue}>{this.state.totalOrder}</Text>
                     <View style={{flexDirection: 'row'}}>
                         <Icon style={{marginRight: 6}} name={this.state.precentageOrder > 0 ? 'arrow-upward-outline' : 'arrow-downward-outline' } width={20} height={20} fill='#fff' />
                         <Text category='p1' style={styles.cardPercent}>{this.state.precentageOrder}%</Text>

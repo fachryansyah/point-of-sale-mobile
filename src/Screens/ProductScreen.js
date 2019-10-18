@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     TextInput
 } from 'react-native'
-import { Text, Button, Icon, Input } from 'react-native-ui-kitten'
+import { Text, Button, Icon, Input, Spinner } from 'react-native-ui-kitten'
 import {connect} from 'react-redux'
 import { pushCart } from '../Redux/Actions/Cart'
 import Rupiah from 'rupiah-format'
@@ -25,7 +25,8 @@ class ProductScreen extends Component {
         super(props)
         this.state = {
             products: [],
-            search: ''
+            search: '',
+            isLoading: true
         }
     }
 
@@ -44,14 +45,23 @@ class ProductScreen extends Component {
     }
 
     async getProductData(){
+        
+        this.setState({
+            isLoading: true
+        })
+
         await Http.get('/product')
         .then((res) => {
             this.setState({
-                products: res.data.data.results
+                products: res.data.data.results,
+                isLoading: false
             })
         })
         .catch((err) => {
             console.log(err.message)
+            this.setState({
+                isLoading: false
+            })
         })
     }
 
@@ -75,6 +85,13 @@ class ProductScreen extends Component {
             })
             console.log(err)
         })
+    }
+
+    resetSearch(){
+        this.setState({
+            search: ''
+        })
+        this.getProductData()
     }
 
     async onAddToCart(product){
@@ -107,6 +124,59 @@ class ProductScreen extends Component {
             )
         }
     }
+    
+    renderIconSearch = (style) => {
+        return (
+            <Icon {...style} name='close-outline' />
+        );
+    };
+
+    __renderProductList(){
+        if (this.state.isLoading) {
+            return(
+                <View style={{ alignItems:'center', marginTop: 20 }}>
+                    <Spinner status='alternative'/>
+                </View>
+            )
+        }else{
+            return(
+                <SwipeListView
+                    data={this.state.products}
+                    renderHiddenItem={ (data, index) => (
+                        <TouchableOpacity onPress={() => this.onAddToCart(data.item)} style={styles.rowBack}>
+                            <View style={{alignItems: 'center'}}>
+                                <Icon name='shopping-cart-outline' fill='#f5365c' width={32} height={32} />
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    rightOpenValue={-50}
+                    renderItem={({item, index}) => (
+                        <View style={{ width: '100%' }}>
+                            <TouchableOpacity onPress={() => alert('test')} activeOpacity={1}>
+                                <View style={styles.card}>
+                                    <View style={[styles.displayRow, {padding: 12} ]}>
+                                        <Image source={{uri: `${API_BASE_URL}/images/${item.image}`}} style={styles.imageProduct} />
+                                        <View style={{ padding: 6, width: SCREEN_WIDTH * 0.7 }}>
+                                            <Text category='h6' style={styles.textTitle}>{item.name}</Text>
+                                            <View style={{ flex: 1, flexDirection: 'row' }}>
+                                                <View style={styles.priceTag}>
+                                                    <Text category='s1' style={styles.textWhite}>{Rupiah.convert(item.price)}</Text>
+                                                </View>
+                                                <View style={styles.viewQty}>
+                                                    <Text category='s1' style={styles.textWhite}>{item.qty}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    keyExtractor={item => item.id}
+                />
+            )
+        }
+    }
 
     render(){
         return(
@@ -117,42 +187,13 @@ class ProductScreen extends Component {
                         size='small'
                         placeholder='Search..'
                         value={this.state.search}
+                        icon={this.renderIconSearch}
+                        onIconPress={() => this.resetSearch()}
                         onChangeText={(val) => this.setState({search: val})}
                         onSubmitEditing={(event) => this.searchProduct(event)}
                     />
                     <View style={{ marginTop: 12 }}>
-                        <SwipeListView
-                            data={this.state.products}
-                            renderHiddenItem={ (data, index) => (
-                                <TouchableOpacity onPress={() => this.onAddToCart(data.item)} style={styles.rowBack}>
-                                    <View style={{alignItems: 'center'}}>
-                                        <Icon name='shopping-cart-outline' fill='#f5365c' width={32} height={32} />
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            rightOpenValue={-50}
-                            renderItem={({item, index}) => (
-                                <View style={{ width: '100%' }}>
-                                    <View style={styles.card}>
-                                        <View style={[styles.displayRow, {padding: 12} ]}>
-                                            <Image source={{uri: `${API_BASE_URL}/images/${item.image}`}} style={styles.imageProduct} />
-                                            <View style={{ padding: 6, width: SCREEN_WIDTH * 0.7 }}>
-                                                <Text category='h6' style={styles.textTitle}>{item.name}</Text>
-                                                <View style={{ flex: 1, flexDirection: 'row' }}>
-                                                    <View style={styles.priceTag}>
-                                                        <Text category='s1' style={styles.textWhite}>{Rupiah.convert(item.price)}</Text>
-                                                    </View>
-                                                    <View style={styles.viewQty}>
-                                                        <Text category='s1' style={styles.textWhite}>{item.qty}</Text>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            )}
-                            keyExtractor={item => item.id}
-                        />
+                        {this.__renderProductList()}
                     </View>
                 </View>
                 <FabButton navigate={this.props.navigation.navigate} />
@@ -204,8 +245,8 @@ const styles = StyleSheet.create({
     viewQty: {
         backgroundColor:"#edadba",
         borderRadius: 20,
-        width: 30,
-        height: 30,
+        width: 25,
+        height: 25,
         alignItems: 'center',
         justifyContent: 'center',
         position: 'absolute',
