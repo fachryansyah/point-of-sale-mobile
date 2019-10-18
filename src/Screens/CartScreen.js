@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, StyleSheet, StatusBar, Dimensions, ToastAndroid} from 'react-native'
+import {View, StyleSheet, StatusBar, Dimensions, Image, ToastAndroid} from 'react-native'
 import {Text, Button} from 'react-native-ui-kitten'
 import { connect } from 'react-redux'
 import { fetchCart, pushCart, cleanCart } from '../Redux/Actions/Cart'
@@ -9,6 +9,7 @@ import Http from '../Helper/Http'
 import CartList from '../Components/Lists/CartList'
 import Modal from "react-native-modal"
 import AsyncStorage from '@react-native-community/async-storage'
+import {WaveIndicator} from 'react-native-indicators'
 import Rupiah from 'rupiah-format'
 
 class CartScreen extends Component {
@@ -100,6 +101,9 @@ class CartScreen extends Component {
             }
         })
         .catch((err) => {
+            this.setState({
+                isLoadingCheckout: false
+            })
             console.log(err.message)
         })
     }
@@ -112,6 +116,29 @@ class CartScreen extends Component {
     toggleModalCheckout(){
         const modalCheckoutVisible = !this.state.modalCheckoutVisible
         this.setState({modalCheckoutVisible})
+    }
+
+    __renderCartList(){
+        if (this.props.cart.cartList < 1) {
+            return(
+                <View>
+                    <Image 
+                        source={require('../Assets/Images/no-cart.png')}
+                        style={{
+                            width: SCREEN_WIDTH * 0.5,
+                            height: SCREEN_WIDTH * 0.5,
+                            marginTop: 30,
+                            alignSelf: 'center'
+                        }}
+                    />
+                    <Text category='h5' style={{alignSelf: 'center', fontFamily:'Montserrat-Bold'}}>No product</Text>
+                </View>
+            )
+        }else{
+            return(
+                <CartList product={this.props.cart.cartList} />
+            )
+        }
     }
 
     __renderTotalCart(){
@@ -155,7 +182,7 @@ class CartScreen extends Component {
                     <View style={styles.modal}>
                         <Text category='h6' style={styles.modalTitle}>Continue checkout ?</Text>
                         <View style={styles.modalFooter}>
-                            <Button style={styles.modalActionYes} status='danger' onPress={() => this.checkoutProduct()}>Yes, sure!</Button>
+                            {this.state.isLoadingCheckout ? <WaveIndicator color='#f24f71' /> : <Button style={styles.modalActionYes} status='danger' onPress={() => this.checkoutProduct()}>Yes, sure!</Button>}
                             <Button style={styles.modalActionNo} status='basic' appearance='outline' onPress={() => this.toggleModalCheckout()}>Cancel</Button>
                         </View>
                     </View>
@@ -166,7 +193,7 @@ class CartScreen extends Component {
                         <Button size='large' onPress={() => this.toggleModalClear()} appearance='ghost' status='danger'>
                             <Icon name='ios-trash' size={20} color='#f5365c' />  CLEAR
                         </Button>
-                        <CartList product={this.props.cart.cartList} />
+                        {this.__renderCartList()}
                         <FAB
                             buttonColor="#d9fae7"
                             iconTextColor="#6be39b" 

@@ -1,40 +1,18 @@
 import React, { Component } from 'react'
 import {View, FlatList, StyleSheet, TouchableOpacity, Dimensions} from 'react-native'
 import Moment from 'moment-timezone'
-import {Text} from 'react-native-ui-kitten'
+import {Text, Spinner} from 'react-native-ui-kitten'
 import Rupiah from 'rupiah-format'
 import Http from '../Helper/Http'
+import Modal from "react-native-modal"
 
 class HistoryScreen extends Component {
     constructor(props){
         super(props)
         this.state = {
-            orders: [
-                {
-                    "id": 31,
-                    "user_id": 1,
-                    "receipt_no": "1570726350764",
-                    "amount": 15000000,
-                    "created_at": "2019-10-10T16:52:30.000Z",
-                    "updated_at": "0000-00-00 00:00:00"
-                },
-                {
-                    "id": 20,
-                    "user_id": 1,
-                    "receipt_no": "1570723910056",
-                    "amount": 24000000,
-                    "created_at": "2019-10-10T16:11:50.000Z",
-                    "updated_at": "2019-10-10T16:14:24.000Z"
-                },
-                {
-                    "id": 19,
-                    "user_id": 1,
-                    "receipt_no": "1570703916528",
-                    "amount": 136000000,
-                    "created_at": "2019-10-10T10:38:37.000Z",
-                    "updated_at": "2019-10-10T13:13:32.000Z"
-                }
-            ]
+            orders: [],
+            isLoading: true,
+            modalLoading: false
         }
     }
 
@@ -51,20 +29,30 @@ class HistoryScreen extends Component {
     }
 
     async getHistoryData(){
-        await Http.get('/order')
+        this.setState({
+            isLoading: true
+        })
+        await Http.get('/order?limit=100')
         .then((res) => {
+            console.log(res.data.data)
             this.setState({
-                orders: res.data.data.results
+                orders: res.data.data.results,
+                isLoading: false
             })
         })
         .catch((err) => {
+            this.setState({
+                isLoading: false
+            })
             console.log(err)
         })
     }
 
     async getHistoryDetail(orderId, navigate) {
+        this.toggleModalLoading()
         await Http.get(`/order/d/${orderId}`)
         .then((res) => {
+            this.toggleModalLoading()
             navigate('Checkout', {
                 receiptNo: res.data.data.receipt_no,
                 amount: res.data.data.amount,
@@ -72,31 +60,63 @@ class HistoryScreen extends Component {
             })
         })
         .catch((err) => {
+            this.toggleModalLoading()
             console.log(err)
         })
+    }
+
+    toggleModalLoading(){
+        const modalLoading = !this.state.modalLoading
+        this.setState({modalLoading})
+    }
+
+    __renderHistoryList(){
+        if (this.state.isLoading) {
+            return(
+                <View style={{ alignItems:'center', marginTop: 50 }}>
+                    <Spinner size='large' status='alternative'/>
+                </View>
+            )
+        }else{
+            return(
+                <FlatList
+                    data={this.state.orders}
+                    renderItem={({item, index}) => (
+                        <TouchableOpacity onPress={() => this.getHistoryDetail(item.id, this.props.navigation.navigate)}>
+                            <View style={styles.list}>
+                                <View style={[styles.displayColumn, styles.floatLeft]}>
+                                    <Text category='h6' style={styles.textTitle}>{item.receipt_no}</Text>
+                                    <View style={styles.priceTag}>
+                                        <Text style={{color: '#fff'}}>{Rupiah.convert(item.amount)}</Text>
+                                    </View>
+                                </View>
+                                <Text style={styles.floatRight}>{Moment.tz(item.created_at, 'Asia/Jakarta').format('MMMM Do YYYY')}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                    keyExtractor={item => item.id}
+                />
+            )
+        }
     }
 
     render(){
         return(
             <>
                 <View>
-                    <FlatList
-                        data={this.state.orders}
-                        renderItem={({item, index}) => (
-                            <TouchableOpacity onPress={() => this.getHistoryDetail(item.id, this.props.navigation.navigate)}>
-                                <View style={styles.list}>
-                                    <View style={[styles.displayColumn, styles.floatLeft]}>
-                                        <Text category='h6' style={styles.textTitle}>{item.receipt_no}</Text>
-                                        <View style={styles.priceTag}>
-                                            <Text style={{color: '#fff'}}>{Rupiah.convert(item.amount)}</Text>
-                                        </View>
-                                    </View>
-                                    <Text style={styles.floatRight}>{Moment.tz(item.created_at, 'Asia/Jakarta').format('MMMM Do YYYY')}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )}
-                        keyExtractor={item => item.id}
-                    />
+                    <Modal
+                        isVisible={this.state.modalLoading}
+                        animationIn='zoomIn'
+                        animationOut='fadeOut'
+                        animationInTiming={400}
+                        animationOutTiming={200}
+                    >
+                        <View style={styles.modal}>
+                            <Text category='h6' style={styles.modalTitle}>Loading</Text>
+                            <Spinner status='alternative'/>
+                        </View>
+                    </Modal>
+                    {this.__renderHistoryList()}
                 </View>
             </>
         )
@@ -134,6 +154,16 @@ const styles = StyleSheet.create({
         padding: 4,
         marginTop: 8
     },
+    modal: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 8,
+        alignItems: 'center'
+    },
+    modalTitle: {
+        fontFamily: 'Montserrat-Bold',
+        marginBottom: 24
+    }
 })
 
 export default HistoryScreen

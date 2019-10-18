@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Dimensions,
     Animated,
+    RefreshControl,
     StatusBar
 } from 'react-native'
 import {
@@ -61,7 +62,8 @@ class HomeScreen extends Component {
                     name: 'Smartphone',
                     icon: 'smartphone'
                 }
-            ]
+            ],
+            isLoading: false
         }
     }
 
@@ -71,13 +73,20 @@ class HomeScreen extends Component {
     }
 
     async getProductData(){
-        await Http.get('/product?limit=4')
+        this.setState({
+            isLoading: true
+        })
+        await Http.get('/product?sort=created_at&mode=desc&limit=4')
         .then((res) => {
             this.setState({
-                products: res.data.data.results
+                products: res.data.data.results,
+                isLoading: false
             })
         })
         .catch((err) => {
+            this.setState({
+                isLoading: false
+            })
             console.log(err.message)
         })
     }
@@ -168,7 +177,11 @@ class HomeScreen extends Component {
                                         useNativeDriver: true
                                     }
                                 )}
+                                refreshControl={
+                                    <RefreshControl refreshing={false} onRefresh={() => this.getProductData()} />
+                                }
                             >
+
                                 <View style={{ flexDirection: 'row', marginHorizontal: 20 }}>
                                     <Text category='h5' style={styles.headerTitle}>By Category</Text>
                                 </View>

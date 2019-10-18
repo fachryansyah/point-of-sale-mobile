@@ -23,6 +23,24 @@ class DrawerContent extends Component {
         )
     }
 
+    HistoryIcon(style){
+        return(
+            <Icon {...style} name='clipboard-outline'/>
+        )
+    }
+
+    StatisticIcon(style){
+        return(
+            <Icon {...style} name='pie-chart-outline'/>
+        )
+    }
+
+    ManageIcon(style){
+        return(
+            <Icon {...style} name='options-2-outline'/>
+        )
+    }
+
     PersonIcon(style){
         return(
             <Icon {...style} name='person'/>
@@ -46,16 +64,16 @@ class DrawerContent extends Component {
         {
             title: 'History',
             screen: 'History',
-            icon: this.SettingIcon
+            icon: this.HistoryIcon
         },
         {
             title: 'Statistic Report',
             screen: 'Statistic',
-            icon: this.SettingIcon
+            icon: this.StatisticIcon
         },
         {
             title: 'Manage Product',
-            screen: 'ManageProduct',
+            screen: 'ListProduct',
             icon: this.SettingIcon
         }
     ];
@@ -68,8 +86,8 @@ class DrawerContent extends Component {
 
     __renderProfileHeader = () => (
         <DrawerHeaderFooter
-            title='John Doe'
-            description='React Native Developer'
+            title='Fahriansyah'
+            description='Iam a Mr.Stark'
             icon={this.PersonIcon}
         />
     )
