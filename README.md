@@ -24,9 +24,7 @@
 ___
 ### Intro
 
-This is a simple point of sales web application made with reactjs, Argon ui kit with beautiful design.
-
-[Demo](http://pointzoo.zeblogic.com)
+This is a simple point of sales android application made with React Native, and Ui kitten with beautiful design.
 
 ___
 ### Features
@@ -42,6 +40,7 @@ ___
 ### Requirments
 
 * [Nodejs](https://nodejs.org/en/) v10 LTS version
+* [Android SDK](https://developer.android.com/studio#downloads)
 * [Npm](https://www.npmjs.com/get-npm) package / [Yarn](https://yarnpkg.com/lang/en/docs/install/#mac-stable) package
 ___
 
@@ -49,7 +48,7 @@ ___
 This project is related to several platforms
 
 * Backend [https://github.com/fachryansyah/point-of-sale-backend](https://github.com/fachryansyah/point-of-sale-backend)
-* Android App [https://github.com/fachryansyah/point-of-sale-mobile](https://github.com/fachryansyah/point-of-sale-mobile)
+* Web App [https://github.com/fachryansyah/point-of-sale-frontend](https://github.com/fachryansyah/point-of-sale-frontend)
 ___
 
 ### Installation
@@ -70,24 +69,31 @@ $ npm install
 ```
 
 ##### Setup Environment
-Before start server development or build for production, you should create new .env file, edit BASE_URL_API variable to backend server. you can found the backend server here.. [https://github.com/fachryansyah/point-of-sale-backend](https://github.com/fachryansyah/point-of-sale-backend)
+Before project development or build for production, you should create new .env file, edit BASE_URL_API variable to backend server. you can found the backend server here.. [https://github.com/fachryansyah/point-of-sale-backend](https://github.com/fachryansyah/point-of-sale-backend)
 
 ```sh
 BASE_URL_API=<Backend-api-url>
 ```
 
-##### Run server development
+##### Run on android device
 if you want start on development mode.
 
 ```sh
-$ npm start
+$ react-native run android
+```
+
+##### Run on ios device
+if you want start on development mode.
+
+```sh
+$ react-native run ios
 ```
 
 ##### Build For Production
 build for production ready, and host ready
 
 ```sh
-$ npm run build
+$ cd android && ./gradlew --assembleRelease
 ```
 ___
 
@@ -99,14 +105,11 @@ List of depedencies using in this project
 | ------ | ------ |
 | [ReactJS](https://reactjs.org) | JavaScript library for building user interfaces |
 | [Axios](https://github.com/axios/axios) | HTTP client for request API |
-| [Bootstrap](https://getbootstrap.com) | CSS Framework |
-| [Chart.js](https://www.chartjs.org) | For Report Statistics |
+| [Ui Kitten](https://akveo.github.io/react-native-ui-kitten/) | Ui Kit |
+| [Chart Kit](https://www.npmjs.com/package/react-native-chart-kit) | Chart Statistic |
 | [Moment](https://momentjs.com) | Manipulate time |
 | [Redux](https://redux.js.org) | Global State Management |
-| [Redux Promise Middleware](https://www.npmjs.com/package/redux-promise-middleware) | Promise handler for react redux |
-| [React Shimmer Effect](https://www.npmjs.com/package/react-shimmer-effect) | Create Shimmer Effect when Loading |
-| [React Toastify](https://www.npmjs.com/package/react-toastify) | Show Notify in React App |
-
+| [Redux Promise Middleware](https://www.npmjs.com/package/redux-promise-middleware) | Promise handler for react redux 
 
 License
 ----
