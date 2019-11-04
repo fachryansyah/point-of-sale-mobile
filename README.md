@@ -103,7 +103,7 @@ List of depedencies using in this project
 
 | Plugin | Description |
 | ------ | ------ |
-| [ReactJS](https://reactjs.org) | JavaScript library for building user interfaces |
+| [React Native](https://facebook.github.io/react-native/) | Mobile Apps Framework |
 | [Axios](https://github.com/axios/axios) | HTTP client for request API |
 | [Ui Kitten](https://akveo.github.io/react-native-ui-kitten/) | Ui Kit |
 | [Chart Kit](https://www.npmjs.com/package/react-native-chart-kit) | Chart Statistic |
