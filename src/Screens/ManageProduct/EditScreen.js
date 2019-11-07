@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {View, StyleSheet, Image, Dimensions, ScrollView} from 'react-native'
 import {Text, Input, Select, Button} from 'react-native-ui-kitten'
-import { API_BASE_URL } from 'react-native-dotenv'
 import {WaveIndicator} from 'react-native-indicators'
 import Http from '../../Helper/Http'
 
@@ -143,7 +142,7 @@ class EditScreen extends Component {
             <>
                 <ScrollView>
                     <View style={styles.container}>
-                        <Image source={{uri: `${API_BASE_URL}/images/${navigation.getParam('image')}`}} style={styles.imageProduct} />
+                        <Image source={{uri: navigation.getParam('image')}} style={styles.imageProduct} />
                         <View style={styles.card}>
                             <Text category='h6' style={styles.cardTitle}>Edit Product</Text>
                             <Input

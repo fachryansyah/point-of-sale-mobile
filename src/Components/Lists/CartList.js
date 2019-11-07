@@ -6,7 +6,6 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import {Text, Button, Icon} from 'react-native-ui-kitten'
 import { addQtyCart, reduceQtyCart, removeCart } from '../../Redux/Actions/Cart'
 import Rupiah from 'rupiah-format'
-import {API_BASE_URL} from 'react-native-dotenv'
 
 const PlusIcon = (style) => (
     <Icon {...style} name='plus-outline' fill='#6be39b' />
@@ -58,7 +57,7 @@ class CartList extends Component {
                         <View style={[styles.container, styles.rowFront]}>
                             <View style={styles.card}>
                                 <View style={styles.cardBody}>
-                                    <Image source={{uri: `${API_BASE_URL}/images/${item.image}`}} style={styles.cardImage} />
+                                    <Image source={{uri: item.image}} style={styles.cardImage} />
                                     <View style={styles.cardContent}>
                                         <Text category='h6' style={styles.textBrand}>{item.name}</Text>
                                         <View style={styles.viewControl}>

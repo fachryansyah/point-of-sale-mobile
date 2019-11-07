@@ -15,7 +15,6 @@ import {connect} from 'react-redux'
 import { pushCart } from '../Redux/Actions/Cart'
 import Rupiah from 'rupiah-format'
 import { SwipeListView } from 'react-native-swipe-list-view'
-import { API_BASE_URL } from 'react-native-dotenv'
 import AsyncStorage from '@react-native-community/async-storage'
 import Http from '../Helper/Http'
 import FabButton from '../Components/FabButton'
@@ -156,7 +155,7 @@ class ProductScreen extends Component {
                             <TouchableOpacity onPress={() => alert('test')} activeOpacity={1}>
                                 <View style={styles.card}>
                                     <View style={[styles.displayRow, {padding: 12} ]}>
-                                        <Image source={{uri: `${API_BASE_URL}/images/${item.image}`}} style={styles.imageProduct} />
+                                        <Image source={{uri: item.image}} style={styles.imageProduct} />
                                         <View style={{ padding: 6, width: SCREEN_WIDTH * 0.7 }}>
                                             <Text category='h6' style={styles.textTitle}>{item.name}</Text>
                                             <View style={{ flex: 1, flexDirection: 'row' }}>

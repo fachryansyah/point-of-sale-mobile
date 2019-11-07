@@ -1,10 +1,8 @@
 import React, {Component} from 'react'
-import {API_BASE_URL} from 'react-native-dotenv'
 import {
     View,
     StyleSheet, 
     TouchableOpacity,
-    TouchableNativeFeedback,
     Image,
     FlatList,
     Dimensions,
@@ -71,7 +69,7 @@ class CardProduct extends Component {
                             <View style={styles.wrapCard}>
                                 <View style={styles.card}>
                                     <TouchableOpacity onPress={() => alert('test')}>
-                                        <Image source={{uri: `${API_BASE_URL}/images/${item.image}`}} style={styles.cardImage} />
+                                        <Image source={{uri: item.image}} style={styles.cardImage} />
                                         <View style={styles.cardContent}>
                                             <Text category='h5' style={styles.cardBrand}>{item.name}</Text>
                                         </View>

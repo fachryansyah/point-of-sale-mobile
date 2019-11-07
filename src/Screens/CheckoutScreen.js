@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {View, FlatList, StyleSheet, Dimensions} from 'react-native'
-import {API_BASE_URL} from 'react-native-dotenv'
 import {Text, Button} from 'react-native-ui-kitten'
 import Rupiah from 'rupiah-format'
 
